@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { faHouse } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const ComponentNav = styled.nav`
   display: flex;
@@ -11,25 +11,10 @@ const ComponentNav = styled.nav`
   gap: 8px;
   background: #493971;
   color: #fff;
-`;
-const NavList = [
-  {
-    title: 'nav-1',
-    href: '/nav'
-  },
-  {
-    title: 'nav-2',
-    href: '/nav'
-  },
-  {
-    title: 'nav-3',
-    href: '/nav'
-  },
-  {
-    title: 'nav-4',
-    href: '/nav'
+  @media only screen and (max-width: 1000px) {
+    padding: 24px 0 24px 16px;
   }
-];
+`;
 const NavItem = styled.li`
   position: relative;
   display: flex;
@@ -40,21 +25,15 @@ const NavItem = styled.li`
   margin-top: 4%;
   z-index: 1;
   font-size: 16px;
-  color: ${(props) => (props.$active ? '#000' : '#fff')};
-  background: ${(props) => (props.$active ? '#fff' : '#493971')};
-  border-radius: ${(props) => (props.$active ? '26px 0 0 26px' : '20px')};
-  /* border-radius: 24px; */
-  /* &:after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    right: 0;
-    width: 92%;
-    height: 100%;
-    border-radius: 24px;
-    background-color: ${(props) => (props.$active ? '#fff' : '#493971')};
-  } */
+  font-weight: 700;
+  color: ${(props) => (props.$active ? "#000" : "#fff")};
+  background: ${(props) => (props.$active ? "#fff" : "#493971")};
+  border-radius: ${(props) => (props.$active ? "26px 0 0 26px" : "20px")};
+  @media only screen and (max-width: 1000px) {
+    .list-title {
+      display: none;
+    }
+  }
 `;
 const LimeDeco = styled.span`
   position: absolute;
@@ -67,7 +46,7 @@ const LimeDeco = styled.span`
     width: 100%;
     height: 14px;
     &:after {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
@@ -82,7 +61,7 @@ const LimeDeco = styled.span`
     width: 100%;
     height: 14px;
     &:after {
-      content: '';
+      content: "";
       position: absolute;
       top: 0;
       left: 0;
@@ -93,7 +72,7 @@ const LimeDeco = styled.span`
     }
   }
 `;
-export default function ListNav() {
+export default function ListNav({ NavList }) {
   const [navIdx, setNavIdx] = useState(0);
   const handleNav = (index) => {
     setNavIdx(index);
@@ -112,7 +91,7 @@ export default function ListNav() {
             <>
               <NavItem
                 key={list.title}
-                className={navIdx === i ? 'active' : ''}
+                className={navIdx === i ? "active" : ""}
                 $active={navIdx === i}
                 onClick={() => {
                   handleNav(i);
@@ -120,7 +99,7 @@ export default function ListNav() {
               >
                 {navIdx === i && <LimeDeco />}
                 <FontAwesomeIcon icon={faHouse} />
-                {list.title}
+                <span class="list-title">{list.title}</span>
                 {navIdx === i && <LimeDeco />}
               </NavItem>
             </>

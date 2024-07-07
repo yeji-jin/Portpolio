@@ -1,11 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import componentItmes from '../api/componentItmes';
-console.log('componentItmes', componentItmes);
+import React from "react";
+import styled from "styled-components";
+import componentItmes from "../api/componentItmes";
 
 // style
-//
-// grid-template-columns: repeat(3, minmax(240px, 1fr));
 const Wrapper = styled.div`
   flex: 1;
   display: flex;
@@ -22,7 +19,6 @@ const GridContainer = styled.div`
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
   height: 100%;
-  /* padding: 60px; */
 `;
 const ListItem = styled.div`
   display: flex;
