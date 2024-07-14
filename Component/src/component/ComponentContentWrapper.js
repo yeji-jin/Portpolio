@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import styled from "styled-components";
-import { faHouse } from "@fortawesome/free-solid-svg-icons";
+import { faHouse, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useNavigate, Route, Routes } from "react-router-dom";
 import componentItmes from "../api/componentItmes";
+import mainComponentItems from "../api/mainComponentItems";
+import MainHome from "./MainHome";
+import ComponentDetail from "./ComponentDetail";
 
 // nav
 const ComponentNav = styled.nav`
@@ -80,35 +84,73 @@ const Wrapper = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 80px 40px;
+  padding: 40px;
   background: #f9f9f9;
   border-radius: 0 16px 16px 0;
   gap: 40px;
-  overflow-y: auto;
+  overflow: hidden;
 `;
 const GridContainer = styled.div`
   flex: 1;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
+  padding: 1%;
   height: 100%;
+  overflow: auto;
+`;
+const ContentTitle = styled.h2`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 36px;
+  font-weight: 700;
 `;
 const ListItem = styled.div`
   display: flex;
   justify-content: center;
+  min-height: 260px;
   box-shadow: 0 3px 15px rgba(51, 51, 51, 0.2);
+  transition: all 0.3s;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+const Home = styled.h1`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2vh;
+  cursor: pointer;
+  color: ${(props) => (props.$active ? "#493971" : "#fff")};
+  background: ${(props) => (props.$active ? "#fff" : "transparent")};
+`;
+const Blind = styled.span`
+  position: absolute;
+  clip: rect(0 0 0 0);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
 `;
 
 export default function ListNav({ NavList }) {
   const [navIdx, setNavIdx] = useState(0);
-  const [componentName, setcomponentNames] = useState(0);
+  const [componentName, setcomponentNames] = useState("home");
   const [componentItmeList, setComponentItmeList] = useState(null);
+  const navigate = useNavigate();
   const handleNav = (index) => {
+    navigate("/detail");
     setNavIdx(index);
   };
 
   useEffect(() => {
     //init
+    if (mainComponentItems && navIdx === "home") {
+      setcomponentNames(mainComponentItems[0].componentNames);
+      setComponentItmeList(mainComponentItems[0].items);
+    }
     if (componentItmes) {
       setcomponentNames(componentItmes[0].componentNames);
       setComponentItmeList(componentItmes[0].items);
@@ -117,20 +159,31 @@ export default function ListNav({ NavList }) {
   }, []);
 
   useEffect(() => {
-    setcomponentNames(componentItmes[navIdx].componentNames);
-    setComponentItmeList(componentItmes[navIdx].items);
+    if (navIdx === "home") {
+      setcomponentNames(mainComponentItems[0].componentNames);
+      setComponentItmeList(mainComponentItems[0].items);
+    } else {
+      setcomponentNames(componentItmes[navIdx].componentNames);
+      setComponentItmeList(componentItmes[navIdx].items);
+    }
   }, [navIdx]);
 
-  // const navigate = useNavigate();
   const changePath = (title) => {
-    // navigate(`/details/${title}`);
+    navigate(`/detail/${title}`);
+  };
+  const onClickHome = () => {
+    setNavIdx("home");
+    navigate("/");
   };
 
   return (
     <>
       {/* navigation*/}
       <ComponentNav>
-        <h1>LOGO</h1>
+        <Home $active={navIdx === "home"} onClick={() => onClickHome()}>
+          <FontAwesomeIcon icon={faHouse} />
+          <Blind>HOME</Blind>
+        </Home>
         <ul>
           {NavList.map((list, i) => {
             return (
@@ -144,7 +197,7 @@ export default function ListNav({ NavList }) {
                   }}
                 >
                   {navIdx === i && <LimeDeco />}
-                  <FontAwesomeIcon icon={faHouse} />
+                  {/* <FontAwesomeIcon icon={faHouse} /> */}
                   <span className="list-title">{list.title}</span>
                   {navIdx === i && <LimeDeco />}
                 </NavItem>
@@ -155,16 +208,46 @@ export default function ListNav({ NavList }) {
       </ComponentNav>
       {/* items */}
       <Wrapper>
-        <h2>{componentName}</h2>
-        <GridContainer>
-          {componentItmeList?.map((item, i) => {
-            return (
-              <ListItem key={i} onClick={() => changePath(item.title)}>
-                {item.title}
-              </ListItem>
-            );
-          })}
-        </GridContainer>
+        <Routes>
+          {/* <Route path="/" element={<MainHome />}></Route> */}
+          <Route
+            path="/"
+            element={
+              <>
+                <ContentTitle>
+                  {componentName}
+                  {navIdx}
+                </ContentTitle>
+                <GridContainer>
+                  {componentItmeList?.map((item, i) => (
+                    <ListItem key={i} onClick={() => changePath(item.title)}>
+                      {item.title}
+                    </ListItem>
+                  ))}
+                </GridContainer>
+              </>
+            }
+          ></Route>
+          <Route
+            path="/detail"
+            element={
+              <>
+                <ContentTitle>
+                  {componentName}
+                  {navIdx}
+                </ContentTitle>
+                <GridContainer>
+                  {componentItmeList?.map((item, i) => (
+                    <ListItem key={i} onClick={() => changePath(item.title)}>
+                      {item.title}
+                    </ListItem>
+                  ))}
+                </GridContainer>
+              </>
+            }
+          />
+          <Route path="/detail/:id" element={<ComponentDetail />} />
+        </Routes>
       </Wrapper>
     </>
   );
