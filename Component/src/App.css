@@ -17,6 +17,7 @@ body {
   /* background: linear-gradient(166.9deg, #0ae448 53.19%, #0085d0 107.69%); */
   background: linear-gradient(168.89deg, #fec5fb -21.3%, #00bae2 89.88%);
   /* linear-gradient( 166.9deg, var(--color-shockingly-green) 53.19%, #0085d0 107.69% ) #0ae448 */
+  /* revert */
 }
 .App {
   display: flex;
